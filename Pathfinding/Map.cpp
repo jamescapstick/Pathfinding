@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Map.h"
 #include "MapLocation.h"
 #include "Path.h"
@@ -44,6 +45,10 @@ bool Map::load( const std::experimental::filesystem::path& filePath, MapLocation
 					case ' ':
 						//found a space
 						node.setTerrain( TerrainType::Space );
+						break;
+					case 'M':
+						//found a space
+						node.setTerrain( TerrainType::Mountain );
 						break;
 					case 'A':
 						//found our start node

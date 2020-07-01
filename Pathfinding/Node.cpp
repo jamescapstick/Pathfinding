@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Node.h"
 
 const Node invalidNode;
@@ -36,6 +37,8 @@ char Node::toChar() const
 		case TerrainType::Space:
 			character = ' ';
 			break;
+		case TerrainType::Mountain:
+			character = 'M';
 		}
 	}
 
@@ -61,7 +64,15 @@ bool Node::isImpassable() const
 //------------------------------------------------
 int Node::getMovementCost() const
 {
-	//all terrains are cost 1 right now
+	switch ( m_terrain )
+	{
+	case TerrainType::Mountain:
+		return 3;
+	case TerrainType::Space:
+		return 1;
+	case TerrainType::Wall:
+		return 1000;
+	}
 	return 1;
 }
 

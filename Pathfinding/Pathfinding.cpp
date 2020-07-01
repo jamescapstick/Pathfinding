@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Map.h"
 #include "MapLocation.h"
 #include "CommandLineParser.h"

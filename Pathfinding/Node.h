@@ -5,7 +5,8 @@
 enum class TerrainType : std::int8_t
 {
 	Space = 0,
-	Wall
+	Wall,
+	Mountain
 };
 
 class Node

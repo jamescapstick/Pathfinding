@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "AStarPathfinder.h"
 
 #include "Map.h"
@@ -61,6 +62,9 @@ bool AStarPathfinder::findPath( Map& map, const MapLocation& startLocation, cons
 		if ( currentLocation == endLocation )
 		{
 			//found the last node!
+			std::cout << "Finished pathfinding\n";
+			std::cout << "Final movement cost: " << it->second.m_fScore << ".\n";
+
 			path.insert( path.begin(), currentLocation );
 			while ( it != locationInfoMap.end() )
 			{
@@ -71,7 +75,7 @@ bool AStarPathfinder::findPath( Map& map, const MapLocation& startLocation, cons
 				}
 				it = locationInfoMap.find( currentLocation );
 			}
-			std::cout << "Finished pathfinding - we visited " << nodesVisited << " nodes.\n";
+			std::cout << "We visited " << nodesVisited << " nodes.\n";
 			return true;
 		}
 
