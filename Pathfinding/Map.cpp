@@ -172,6 +172,40 @@ int Map::getMovementCost( const MapLocation& from, const MapLocation& to ) const
 
 
 //------------------------------------------------
+//! gets the neighbours of a location
+//  
+//! @param l location
+//! @param neighbours receives a list of neighbours
+//------------------------------------------------
+void Map::getNeighbours( const MapLocation& l, std::vector<MapLocation>& neighbours ) const
+{
+	for ( int xOffset = -1; xOffset <= 1; ++xOffset )
+	{
+		for ( int yOffset = -1; yOffset <= 1; ++yOffset )
+		{
+			//use this one if we can use diagonals
+			if ( (xOffset == 0) && (yOffset == 0) )
+			{
+				//same node if no offset, ignore
+				continue;
+			}
+			//use this one if we can only go to adjacent squares
+			//if ( (xOffset == 0) == (yOffset == 0) )
+			//{
+			//	//same node if no offset, ignore
+			//	continue;
+			//}
+
+			MapLocation neighbourLocation = l;
+			neighbourLocation.m_x += xOffset;
+			neighbourLocation.m_y += yOffset;
+			neighbours.push_back( neighbourLocation );
+		}
+	}
+}
+
+
+//------------------------------------------------
 //! sets a flag to show we've visited a location
 //  
 //! @param l location to set the flag on

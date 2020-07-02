@@ -21,6 +21,7 @@ public:
 	bool									isValidLocation( const MapLocation& n ) const;
 	const Node&								nodeAt( const MapLocation& n ) const;
 	int										getMovementCost( const MapLocation& from, const MapLocation& to ) const;
+	void									getNeighbours( const MapLocation& l, std::vector<MapLocation>& neighbours ) const;
 
 	void									setVisited( const MapLocation& l );
 	void									showPath( const Path& path );

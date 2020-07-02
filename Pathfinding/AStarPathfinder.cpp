@@ -83,63 +83,46 @@ bool AStarPathfinder::findPath( Map& map, const MapLocation& startLocation, cons
 
 		//look at each neighbour
 		MapLocationInfo& currentLocationInfo = it->second;
-		for ( int xOffset = -1; xOffset <= 1; ++xOffset )
+		std::vector<MapLocation> neighbours;
+		map.getNeighbours( currentLocation, neighbours );
+		for ( const MapLocation& neighbourLocation : neighbours )
 		{
-			for ( int yOffset = -1; yOffset <= 1; ++yOffset )
+			const Node& neighbourNode = map.nodeAt( neighbourLocation );
+			if ( neighbourNode.isImpassable() )
 			{
-				//use this one if we can use diagonals
-				if ( (xOffset == 0) && (yOffset == 0) )
+				//can't pass through walls
+				continue;
+			}
+
+			//add a default entry for this node if we don't have one
+			if ( locationInfoMap.find( neighbourLocation ) == locationInfoMap.end() )
+			{
+				locationInfoMap[neighbourLocation] = MapLocationInfo();
+			}
+
+			if ( locationInfoMap[neighbourLocation].m_closed )
+			{
+				//already looked here
+				continue;
+			}
+
+			//this test score is the distance from the start to the neighbour through the current node
+			int testGScore = currentLocationInfo.m_gScore + map.getMovementCost( currentLocation, neighbourLocation );
+			if ( testGScore < locationInfoMap[neighbourLocation].m_gScore )
+			{
+				//this path is better than the one we had before
+				locationInfoMap[neighbourLocation].m_parentLocation = currentLocation;
+				locationInfoMap[neighbourLocation].m_gScore = testGScore;
+				locationInfoMap[neighbourLocation].m_fScore = testGScore + estimate( neighbourLocation, endLocation );
+
+				if ( std::find( openList.begin(), openList.end(), neighbourLocation ) == openList.end() )
 				{
-					//same node if no offset, ignore
-					continue;
-				}
-				//use this one if we can only go to adjacent squares
-				//if ( (xOffset == 0) == (yOffset == 0) )
-				//{
-				//	//same node if no offset, ignore
-				//	continue;
-				//}
-
-				MapLocation neighbourLocation = currentLocation;
-				neighbourLocation.m_x += xOffset;
-				neighbourLocation.m_y += yOffset;
-
-				const Node& neighbourNode = map.nodeAt( neighbourLocation );
-				if ( neighbourNode.isImpassable() )
-				{
-					//can't pass through walls
-					continue;
-				}
-
-				//add a default entry for this node if we don't have one
-				if ( locationInfoMap.find( neighbourLocation ) == locationInfoMap.end() )
-				{
-					locationInfoMap[neighbourLocation] = MapLocationInfo();
-				}
-
-				if ( locationInfoMap[neighbourLocation].m_closed )
-				{
-					//already looked here
-					continue;
-				}
-
-				//this test score is the distance from the start to the neighbour through the current node
-				int testGScore = currentLocationInfo.m_gScore + map.getMovementCost( currentLocation, neighbourLocation );
-				if ( testGScore < locationInfoMap[neighbourLocation].m_gScore )
-				{
-					//this path is better than the one we had before
-					locationInfoMap[neighbourLocation].m_parentLocation = currentLocation;
-					locationInfoMap[neighbourLocation].m_gScore = testGScore;
-					locationInfoMap[neighbourLocation].m_fScore = testGScore + estimate( neighbourLocation, endLocation );
-
-					if ( std::find( openList.begin(), openList.end(), neighbourLocation ) == openList.end() )
-					{
-						openList.push_back( neighbourLocation );
-						map.setVisited( neighbourLocation );
-						++nodesVisited;
-					}
+					openList.push_back( neighbourLocation );
+					map.setVisited( neighbourLocation );
+					++nodesVisited;
 				}
 			}
+
 		}
 
 		//sort the open list by f score
